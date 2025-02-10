@@ -30,3 +30,43 @@ class TestIrisProject(unittest.TestCase):
       print(f"number of duplicate rows: {duplicate_count})
       data.drop_duplicates(inplace=True)
     
+    self.assertEqual(data.duplicated.sum(), 0)
+
+  def test_data_splitting(self):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    self.assertEqual(len(X_train), 120)
+    self.assertEqual(len(X_test), 30)
+
+  def test_scaling(self):
+    X_train, X_test, _, _ = train_test_split(X, y, test_size=0.2, random_state=42)
+    scaler = StandardScalar()
+    X_train_scaled = scalar.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+
+    self.assertAlmostEqual(X_train_scaled.mean(), 0, delta=0.1)
+    self.assertAlmostEqual(X_train_scaled.std(), 1, delta=0.1)
+
+  def test_model_training_and_evaluation(self):
+    X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, test_size=0.2, random_state=42)
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+
+    model = LogisticRegression()
+    model.fit(X_train_scaled, y_train)
+    y_pred = model.predict(X_test_scaled)
+
+    # Test the model's accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+    self.assertGreaterEqual(accuracy, 0.9)  # 90% or more
+
+    # Test confusion matrix
+    cm = confusion_matrix(y_test, y_pred)
+    self.assertEqual(cm.shape, (3, 3))
+
+
+if __name__ == '__main__':
+    unittest.main()
+
+    
+    
