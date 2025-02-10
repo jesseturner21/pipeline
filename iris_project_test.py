@@ -7,7 +7,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 class TestIrisProject(unittest.TestCase):
-  def setup(self):
+  def __init__(self):
     self.iris = load_iris()
     self.X = self.iris.data
     self.y = self.iris.target
